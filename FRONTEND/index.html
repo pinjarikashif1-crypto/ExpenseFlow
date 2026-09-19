@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ExpenseFlow</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+
+<body>
+
+<div class="app-container">
+
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                ₹
+            </div>
+
+            <div>
+                <h2>ExpenseFlow</h2>
+                <span>Personal Finance</span>
+            </div>
+
+        </div>
+
+
+        <nav>
+
+            <a
+                href="#dashboard"
+                class="nav-item active"
+            >
+                <span>⌂</span>
+                Dashboard
+            </a>
+
+
+            <a
+                href="#transactions"
+                class="nav-item"
+            >
+                <span>▤</span>
+                Transactions
+            </a>
+
+
+            <a
+                href="#add-section"
+                class="nav-item"
+            >
+                <span>＋</span>
+                Add Transaction
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <p>ExpenseFlow</p>
+
+            <small>
+                Personal Expense Tracker
+            </small>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="main-content">
+
+
+        <!-- =========================
+             TOPBAR
+        ========================== -->
+
+        <div class="topbar">
+
+            <div>
+
+                <h1>Dashboard</h1>
+
+                <p>
+                    Track your income and expenses
+                    easily.
+                </p>
+
+            </div>
+
+
+            <button
+                class="add-btn"
+                onclick="scrollToAdd()"
+            >
+                + Add Transaction
+            </button>
+
+        </div>
+
+
+
+        <!-- =========================
+             SUMMARY CARDS
+        ========================== -->
+
+        <section
+            id="dashboard"
+            class="summary-grid"
+        >
+
+
+            <div class="summary-card income-card">
+
+                <div class="card-top">
+
+                    <span>Total Income</span>
+
+                    <div class="card-icon">
+                        ↑
+                    </div>
+
+                </div>
+
+
+                <h2 id="totalIncome">
+                    ₹0.00
+                </h2>
+
+
+                <p>
+                    Total money received
+                </p>
+
+            </div>
+
+
+
+            <div class="summary-card expense-card">
+
+                <div class="card-top">
+
+                    <span>Total Expense</span>
+
+                    <div class="card-icon">
+                        ↓
+                    </div>
+
+                </div>
+
+
+                <h2 id="totalExpense">
+                    ₹0.00
+                </h2>
+
+
+                <p>
+                    Total money spent
+                </p>
+
+            </div>
+
+
+
+            <div class="summary-card balance-card">
+
+                <div class="card-top">
+
+                    <span>Current Balance</span>
+
+                    <div class="card-icon">
+                        ₹
+                    </div>
+
+                </div>
+
+
+                <h2 id="totalBalance">
+                    ₹0.00
+                </h2>
+
+
+                <p>
+                    Income minus expenses
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =========================
+             EXISTING DASHBOARD
+        ========================== -->
+
+        <section class="dashboard-grid">
+
+
+            <!-- EXPENSE OVERVIEW -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>
+                            Expense Overview
+                        </h2>
+
+                        <p>
+                            Income vs expense
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-container">
+
+                    <canvas id="expenseChart"></canvas>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- QUICK SUMMARY -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>
+                            Quick Summary
+                        </h2>
+
+                        <p>
+                            Current financial status
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="quick-item">
+
+                    <span>
+                        Income
+                    </span>
+
+                    <strong id="quickIncome">
+                        ₹0.00
+                    </strong>
+
+                </div>
+
+
+                <div class="quick-item">
+
+                    <span>
+                        Expense
+                    </span>
+
+                    <strong id="quickExpense">
+                        ₹0.00
+                    </strong>
+
+                </div>
+
+
+                <div class="quick-item">
+
+                    <span>
+                        Balance
+                    </span>
+
+                    <strong id="quickBalance">
+                        ₹0.00
+                    </strong>
+
+                </div>
+
+
+                <div
+                    class="quick-message"
+                    id="balanceMessage"
+                >
+                    Loading...
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =========================
+             MONTHLY ANALYSIS
+        ========================== -->
+
+        <section class="dashboard-grid">
+
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>
+                            Monthly Analysis
+                        </h2>
+
+                        <p>
+                            Monthly income vs expense
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-container">
+
+                    <canvas
+                        id="monthlyChart"
+                    ></canvas>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- CATEGORY ANALYSIS -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>
+                            Category Analysis
+                        </h2>
+
+                        <p>
+                            Expenses by category
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-container">
+
+                    <canvas
+                        id="categoryChart"
+                    ></canvas>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =========================
+             ADD / EDIT TRANSACTION
+        ========================== -->
+
+        <section
+            class="panel add-section"
+            id="add-section"
+        >
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2 id="formTitle">
+                        Add Transaction
+                    </h2>
+
+                    <p id="formSubtitle">
+                        Record your income or expense
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form id="transactionForm">
+
+
+                <div class="form-grid">
+
+
+                    <!-- TITLE -->
+
+                    <div class="form-group">
+
+                        <label for="title">
+                            Transaction Title
+                        </label>
+
+                        <input
+                            type="text"
+                            id="title"
+                            placeholder="e.g. Grocery Shopping"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- AMOUNT -->
+
+                    <div class="form-group">
+
+                        <label for="amount">
+                            Amount
+                        </label>
+
+                        <input
+                            type="number"
+                            id="amount"
+                            placeholder="Enter amount"
+                            min="1"
+                            step="0.01"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- TYPE -->
+
+                    <div class="form-group">
+
+                        <label for="type">
+                            Type
+                        </label>
+
+                        <select
+                            id="type"
+                            required
+                        >
+
+                            <option value="expense">
+                                Expense
+                            </option>
+
+                            <option value="income">
+                                Income
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- CATEGORY -->
+
+                    <div class="form-group">
+
+                        <label for="category">
+                            Category
+                        </label>
+
+                        <select
+                            id="category"
+                            required
+                        >
+
+                            <option value="">
+                                Select Category
+                            </option>
+
+                            <option value="Food">
+                                Food
+                            </option>
+
+                            <option value="Travel">
+                                Travel
+                            </option>
+
+                            <option value="Shopping">
+                                Shopping
+                            </option>
+
+                            <option value="Bills">
+                                Bills
+                            </option>
+
+                            <option value="Salary">
+                                Salary
+                            </option>
+
+                            <option value="Education">
+                                Education
+                            </option>
+
+                            <option value="Health">
+                                Health
+                            </option>
+
+                            <option value="Entertainment">
+                                Entertainment
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- DATE -->
+
+                    <div class="form-group">
+
+                        <label for="transaction_date">
+                            Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="transaction_date"
+                            required
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- FORM BUTTONS -->
+
+                <div class="form-buttons">
+
+                    <button
+                        type="submit"
+                        class="submit-btn"
+                        id="submitBtn"
+                    >
+                        Add Transaction
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="cancel-btn"
+                        id="cancelEditBtn"
+                        onclick="cancelEdit()"
+                        style="display: none;"
+                    >
+                        Cancel
+                    </button>
+
+                </div>
+
+
+                <p id="formMessage"></p>
+
+
+            </form>
+
+        </section>
+
+
+
+        <!-- =========================
+             TRANSACTIONS
+        ========================== -->
+
+        <section
+            class="panel"
+            id="transactions"
+        >
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>
+                        Recent Transactions
+                    </h2>
+
+                    <p>
+                        Manage your transactions
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- SEARCH + FILTER -->
+
+            <div class="filter-box">
+
+
+                <div class="search-wrapper">
+
+                    <span>
+                        🔍
+                    </span>
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search transactions..."
+                    >
+
+                </div>
+
+
+
+                <select id="typeFilter">
+
+                    <option value="all">
+                        All Types
+                    </option>
+
+                    <option value="income">
+                        Income
+                    </option>
+
+                    <option value="expense">
+                        Expense
+                    </option>
+
+                </select>
+
+
+
+                <select id="categoryFilter">
+
+                    <option value="all">
+                        All Categories
+                    </option>
+
+                    <option value="Food">
+                        Food
+                    </option>
+
+                    <option value="Travel">
+                        Travel
+                    </option>
+
+                    <option value="Shopping">
+                        Shopping
+                    </option>
+
+                    <option value="Bills">
+                        Bills
+                    </option>
+
+                    <option value="Salary">
+                        Salary
+                    </option>
+
+                    <option value="Education">
+                        Education
+                    </option>
+
+                    <option value="Health">
+                        Health
+                    </option>
+
+                    <option value="Entertainment">
+                        Entertainment
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+
+            </div>
+
+
+
+            <!-- TABLE -->
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Title
+                            </th>
+
+                            <th>
+                                Category
+                            </th>
+
+                            <th>
+                                Type
+                            </th>
+
+                            <th>
+                                Amount
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="transactionTable">
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="empty-row"
+                            >
+                                Loading transactions...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =========================
+             FOOTER
+        ========================== -->
+
+        <footer>
+
+            ExpenseFlow — Personal Expense Tracker
+
+        </footer>
+
+
+    </main>
+
+</div>
+
+
+
+<!-- =========================
+     JAVASCRIPT
+========================== -->
+
+<script
+    src="{{ url_for('static', filename='script.js') }}"
+></script>
+
+
+</body>
+
+</html>
