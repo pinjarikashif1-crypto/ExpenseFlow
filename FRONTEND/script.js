@@ -50,8 +50,7 @@ async function loadSummary() {
         const message = document.getElementById("balanceMessage");
 
         if (data.balance > 0) {
-            message.textContent =
-                "Your current balance is positive.";
+            message.textContent = "Your current balance is positive.";
         }
         else if (data.balance < 0) {
             message.textContent =
@@ -115,7 +114,6 @@ function updateChart(data) {
         options: {
 
             responsive: true,
-
             maintainAspectRatio: false,
 
             plugins: {
@@ -155,15 +153,12 @@ async function loadMonthlyAnalysis() {
         const expenseData =
             data.map(item => item.expense);
 
-
         const ctx =
             document.getElementById("monthlyChart");
-
 
         if (monthlyChart) {
             monthlyChart.destroy();
         }
-
 
         monthlyChart = new Chart(ctx, {
 
@@ -177,17 +172,13 @@ async function loadMonthlyAnalysis() {
 
                     {
                         label: "Income",
-
                         data: incomeData,
-
                         backgroundColor: "#16a34a"
                     },
 
                     {
                         label: "Expense",
-
                         data: expenseData,
-
                         backgroundColor: "#dc2626"
                     }
 
@@ -198,15 +189,12 @@ async function loadMonthlyAnalysis() {
             options: {
 
                 responsive: true,
-
                 maintainAspectRatio: false,
 
                 scales: {
 
                     y: {
-
                         beginAtZero: true
-
                     }
 
                 },
@@ -214,9 +202,7 @@ async function loadMonthlyAnalysis() {
                 plugins: {
 
                     legend: {
-
                         position: "bottom"
-
                     }
 
                 }
@@ -252,22 +238,18 @@ async function loadCategoryAnalysis() {
         const data =
             await response.json();
 
-
         const labels =
             data.map(item => item.category);
 
         const values =
             data.map(item => item.total);
 
-
         const ctx =
             document.getElementById("categoryChart");
-
 
         if (categoryChart) {
             categoryChart.destroy();
         }
-
 
         categoryChart = new Chart(ctx, {
 
@@ -304,15 +286,12 @@ async function loadCategoryAnalysis() {
             options: {
 
                 responsive: true,
-
                 maintainAspectRatio: false,
 
                 plugins: {
 
                     legend: {
-
                         position: "bottom"
-
                     }
 
                 }
@@ -392,7 +371,6 @@ function displayTransactions(transactions) {
 
     table.innerHTML = "";
 
-
     if (transactions.length === 0) {
 
         table.innerHTML = `
@@ -413,29 +391,43 @@ function displayTransactions(transactions) {
         return;
     }
 
-
     transactions.forEach(transaction => {
 
         const row =
             document.createElement("tr");
-
 
         const amountClass =
             transaction.type === "income"
                 ? "income-text"
                 : "expense-text";
 
-
         const amountSign =
             transaction.type === "income"
                 ? "+"
                 : "-";
 
-
         const badgeClass =
             transaction.type === "income"
                 ? "income-badge"
                 : "expense-badge";
+
+
+        let receiptButton = "";
+
+        if (transaction.type === "expense") {
+
+            receiptButton = `
+
+                <button
+                    class="refresh-btn"
+                    onclick="downloadReceipt(${transaction.id})"
+                >
+                    Receipt
+                </button>
+
+            `;
+
+        }
 
 
         row.innerHTML = `
@@ -488,6 +480,8 @@ function displayTransactions(transactions) {
                     Delete
                 </button>
 
+                ${receiptButton}
+
             </td>
 
         `;
@@ -512,14 +506,11 @@ function filterTransactions() {
             .toLowerCase()
             .trim();
 
-
     const type =
         document.getElementById("typeFilter").value;
 
-
     const category =
         document.getElementById("categoryFilter").value;
-
 
     const filtered =
         allTransactions.filter(transaction => {
@@ -536,16 +527,13 @@ function filterTransactions() {
                     .toLowerCase()
                     .includes(search);
 
-
             const matchesType =
                 type === "all" ||
                 transaction.type === type;
 
-
             const matchesCategory =
                 category === "all" ||
                 transaction.category === category;
-
 
             return (
                 matchesSearch &&
@@ -554,7 +542,6 @@ function filterTransactions() {
             );
 
         });
-
 
     displayTransactions(filtered);
 
@@ -572,7 +559,6 @@ function editTransaction(id) {
             item => item.id === id
         );
 
-
     if (!transaction) {
 
         alert("Transaction not found.");
@@ -580,49 +566,37 @@ function editTransaction(id) {
         return;
     }
 
-
     editingTransactionId = id;
-
 
     document.getElementById("title").value =
         transaction.title;
 
-
     document.getElementById("amount").value =
         transaction.amount;
-
 
     document.getElementById("type").value =
         transaction.type;
 
-
     document.getElementById("category").value =
         transaction.category;
-
 
     document.getElementById("transaction_date").value =
         transaction.transaction_date;
 
-
     document.getElementById("formTitle").textContent =
         "Edit Transaction";
-
 
     document.getElementById("formSubtitle").textContent =
         "Update your income or expense";
 
-
     document.getElementById("submitBtn").textContent =
         "Update Transaction";
-
 
     document.getElementById("cancelEditBtn").style.display =
         "inline-block";
 
-
     document.getElementById("formMessage").textContent =
         "";
-
 
     document
         .getElementById("add-section")
@@ -641,31 +615,24 @@ function cancelEdit() {
 
     editingTransactionId = null;
 
-
     document
         .getElementById("transactionForm")
         .reset();
 
-
     document.getElementById("formTitle").textContent =
         "Add Transaction";
-
 
     document.getElementById("formSubtitle").textContent =
         "Record your income or expense";
 
-
     document.getElementById("submitBtn").textContent =
         "Add Transaction";
-
 
     document.getElementById("cancelEditBtn").style.display =
         "none";
 
-
     document.getElementById("formMessage").textContent =
         "";
-
 
     setToday();
 
@@ -684,44 +651,36 @@ document
 
             event.preventDefault();
 
-
             const title =
                 document.getElementById("title")
                     .value
                     .trim();
 
-
             const amount =
                 document.getElementById("amount")
                     .value;
-
 
             const type =
                 document.getElementById("type")
                     .value;
 
-
             const category =
                 document.getElementById("category")
                     .value;
-
 
             const transaction_date =
                 document
                     .getElementById("transaction_date")
                     .value;
 
-
             const message =
                 document.getElementById(
                     "formMessage"
                 );
 
-
             try {
 
                 let response;
-
 
                 if (editingTransactionId !== null) {
 
@@ -785,10 +744,8 @@ document
 
                 }
 
-
                 const data =
                     await response.json();
-
 
                 if (!response.ok) {
 
@@ -801,7 +758,6 @@ document
 
                     return;
                 }
-
 
                 if (editingTransactionId !== null) {
 
@@ -816,48 +772,36 @@ document
 
                 }
 
-
                 message.style.color =
                     "#15803d";
 
-
                 editingTransactionId = null;
-
 
                 document
                     .getElementById("transactionForm")
                     .reset();
 
-
                 document.getElementById("formTitle")
                     .textContent =
                     "Add Transaction";
-
 
                 document.getElementById("formSubtitle")
                     .textContent =
                     "Record your income or expense";
 
-
                 document.getElementById("submitBtn")
                     .textContent =
                     "Add Transaction";
-
 
                 document.getElementById("cancelEditBtn")
                     .style.display =
                     "none";
 
-
                 setToday();
 
-
                 await loadSummary();
-
                 await loadTransactions();
-
                 await loadMonthlyAnalysis();
-
                 await loadCategoryAnalysis();
 
             }
@@ -888,11 +832,9 @@ async function deleteTransaction(id) {
             "Are you sure you want to delete this transaction?"
         );
 
-
     if (!confirmed) {
         return;
     }
-
 
     try {
 
@@ -904,15 +846,11 @@ async function deleteTransaction(id) {
                 }
             );
 
-
         if (response.ok) {
 
             await loadSummary();
-
             await loadTransactions();
-
             await loadMonthlyAnalysis();
-
             await loadCategoryAnalysis();
 
         }
@@ -936,6 +874,419 @@ async function deleteTransaction(id) {
 }
 
 
+// =====================================================
+// DOWNLOAD TRANSACTION REPORT
+// =====================================================
+
+function downloadReport() {
+
+    if (allTransactions.length === 0) {
+
+        alert("No transactions available for download.");
+
+        return;
+    }
+
+    let csv = "";
+
+    csv += "ExpenseFlow - Transaction Report\n";
+    csv += "Title,Category,Type,Amount,Date\n";
+
+
+    allTransactions.forEach(transaction => {
+
+        const title =
+            String(transaction.title)
+                .replaceAll('"', '""');
+
+        const category =
+            String(transaction.category)
+                .replaceAll('"', '""');
+
+        const type =
+            String(transaction.type);
+
+        const amount =
+            Number(transaction.amount).toFixed(2);
+
+        const date =
+            transaction.transaction_date;
+
+
+        csv += `"${title}","${category}","${type}","${amount}","${date}"\n`;
+
+    });
+
+
+    const blob =
+        new Blob(
+            [csv],
+            {
+                type: "text/csv;charset=utf-8;"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const link =
+        document.createElement("a");
+
+    link.href = url;
+
+    link.download =
+        "ExpenseFlow_Transaction_Report.csv";
+
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+// =====================================================
+// DOWNLOAD EXPENSE RECEIPT
+// =====================================================
+
+function downloadReceipt(id) {
+
+    const transaction =
+        allTransactions.find(
+            item => item.id === id
+        );
+
+
+    if (!transaction) {
+
+        alert("Transaction not found.");
+
+        return;
+    }
+
+
+    if (transaction.type !== "expense") {
+
+        alert("Receipt is available only for expenses.");
+
+        return;
+    }
+
+
+    const amount =
+        formatMoney(transaction.amount);
+
+
+    const receiptHTML = `
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Expense Receipt - ExpenseFlow</title>
+
+<style>
+
+body {
+
+    font-family: Arial, sans-serif;
+
+    background: #f3f4f6;
+
+    padding: 30px;
+
+}
+
+.receipt {
+
+    max-width: 500px;
+
+    margin: auto;
+
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 12px;
+
+    box-shadow: 0 5px 20px rgba(0,0,0,0.10);
+
+}
+
+.header {
+
+    text-align: center;
+
+    border-bottom: 2px solid #e5e7eb;
+
+    padding-bottom: 15px;
+
+    margin-bottom: 20px;
+
+}
+
+.header h1 {
+
+    margin: 0;
+
+    color: #111827;
+
+}
+
+.header p {
+
+    margin: 5px 0;
+
+    color: #6b7280;
+
+}
+
+.row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    padding: 12px 0;
+
+    border-bottom: 1px solid #e5e7eb;
+
+}
+
+.label {
+
+    color: #6b7280;
+
+}
+
+.value {
+
+    font-weight: bold;
+
+    color: #111827;
+
+}
+
+.amount {
+
+    color: #dc2626;
+
+    font-size: 22px;
+
+}
+
+.footer {
+
+    text-align: center;
+
+    margin-top: 25px;
+
+    color: #6b7280;
+
+    font-size: 13px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="receipt">
+
+    <div class="header">
+
+        <h1>ExpenseFlow</h1>
+
+        <p>Personal Expense Tracker</p>
+
+        <p><strong>Expense Receipt</strong></p>
+
+    </div>
+
+
+    <div class="row">
+
+        <span class="label">Transaction ID</span>
+
+        <span class="value">
+            ${transaction.id}
+        </span>
+
+    </div>
+
+
+    <div class="row">
+
+        <span class="label">Title</span>
+
+        <span class="value">
+            ${escapeHTML(transaction.title)}
+        </span>
+
+    </div>
+
+
+    <div class="row">
+
+        <span class="label">Category</span>
+
+        <span class="value">
+            ${escapeHTML(transaction.category)}
+        </span>
+
+    </div>
+
+
+    <div class="row">
+
+        <span class="label">Date</span>
+
+        <span class="value">
+            ${transaction.transaction_date}
+        </span>
+
+    </div>
+
+
+    <div class="row">
+
+        <span class="label">Type</span>
+
+        <span class="value">
+            Expense
+        </span>
+
+    </div>
+
+
+    <div class="row">
+
+        <span class="label">Amount</span>
+
+        <span class="value amount">
+            ${amount}
+        </span>
+
+    </div>
+
+
+    <div class="footer">
+
+        Generated by ExpenseFlow
+
+        <br>
+
+        Personal Expense Tracker
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
+
+`;
+
+
+    const blob =
+        new Blob(
+            [receiptHTML],
+            {
+                type: "text/html;charset=utf-8"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const link =
+        document.createElement("a");
+
+
+    link.href = url;
+
+
+    link.download =
+        `ExpenseFlow_Receipt_${transaction.id}.html`;
+
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+// =====================================================
+// ADD DOWNLOAD REPORT BUTTON
+// =====================================================
+
+function addDownloadReportButton() {
+
+    const panelHeader =
+        document.querySelector(
+            ".transactions-panel .panel-header"
+        );
+
+
+    if (!panelHeader) {
+        return;
+    }
+
+
+    if (
+        document.getElementById(
+            "downloadReportBtn"
+        )
+    ) {
+        return;
+    }
+
+
+    const button =
+        document.createElement("button");
+
+
+    button.id =
+        "downloadReportBtn";
+
+
+    button.className =
+        "refresh-btn";
+
+
+    button.textContent =
+        "⬇ Download Report";
+
+
+    button.onclick =
+        downloadReport;
+
+
+    panelHeader.appendChild(button);
+
+}
+
+
 // =========================
 // SET TODAY'S DATE
 // =========================
@@ -946,7 +1297,6 @@ function setToday() {
         new Date()
             .toISOString()
             .split("T")[0];
-
 
     document.getElementById(
         "transaction_date"
@@ -1032,6 +1382,8 @@ document.addEventListener(
     function() {
 
         setToday();
+
+        addDownloadReportButton();
 
         loadSummary();
 
