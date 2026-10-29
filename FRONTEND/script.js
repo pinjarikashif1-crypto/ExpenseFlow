@@ -101,8 +101,8 @@ function updateChart(data) {
                 ],
 
                 backgroundColor: [
-                    "#16a34a",
-                    "#dc2626"
+                    "#1abf56",
+                    "#e31515"
                 ],
 
                 borderWidth: 0
@@ -1287,21 +1287,19 @@ function addDownloadReportButton() {
 }
 
 
-// =========================
-// SET TODAY'S DATE
-// =========================
-
 function setToday() {
+    const now = new Date();
 
-    const today =
-        new Date()
-            .toISOString()
-            .split("T")[0];
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
 
-    document.getElementById(
-        "transaction_date"
-    ).value = today;
+    const dateInput = document.getElementById("transaction_date");
 
+    if (dateInput) {
+        dateInput.value = `${year}-${month}-${day}`;
+        dateInput.max = `${year}-${month}-${day}`;
+    }
 }
 
 
